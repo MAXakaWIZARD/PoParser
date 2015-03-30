@@ -17,7 +17,7 @@ class Entry
     public function __construct($properties)
     {
         $this->msgId = $properties['msgid'];
-        $this->msgIdPlural = $properties['msgid_plural'];
+        $this->msgIdPlural = isset($properties['msgid_plural']) ? $properties['msgid_plural'] : null;
         $this->fuzzy = !empty($properties['fuzzy']);
         $this->obsolete = !empty($properties['obsolete']);
         $this->translations = $properties['msgstr'];
