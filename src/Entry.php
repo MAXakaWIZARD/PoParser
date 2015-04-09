@@ -86,7 +86,7 @@ class Entry
      *
      * @return string
      */
-    public function getTranslation($index)
+    public function getTranslation($index = 0)
     {
         return (isset($this->translations[$index])) ? $this->translations[$index] : '';
     }
