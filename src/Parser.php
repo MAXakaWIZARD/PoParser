@@ -5,6 +5,11 @@ namespace PoParser;
 class Parser
 {
     /**
+     * @var array
+     */
+    protected $headers = array();
+
+    /**
      * @var Entry[]
      */
     protected $entries = array();
@@ -32,27 +37,27 @@ class Parser
 
     /**
      * Reads and parses strings in a .po file.
-
-        \return An array of entries located in the file:
-        Format: array(
-            'msgid'		=> <string> ID of the message.
-            'msgctxt'	=> <string> Message context.
-            'msgstr'	=> <string> Message translation.
-            'tcomment'	=> <string> Comment from translator.
-            'ccomment'	=> <string> Extracted comments from code.
-            'reference'	=> <string> Location of string in code.
-            'obsolete'  => <bool> Is the message obsolete?
-            'fuzzy'		=> <bool> Is the message "fuzzy"?
-            'flags'		=> <string> Flags of the entry. Internal usage.
-        )
-
-        \todo: What means the line "#@ "???
-
-        #~ (old entry)
-        # @ default
-        #, fuzzy
-        #~ msgid "Editar datos"
-        #~ msgstr "editar dades"
+     *
+     *  return An array of entries located in the file:
+     *  Format: array(
+     *      'msgid'     => <string> ID of the message.
+     *      'msgctxt'   => <string> Message context.
+     *      'msgstr'    => <string> Message translation.
+     *      'tcomment'  => <string> Comment from translator.
+     *      'ccomment'  => <string> Extracted comments from code.
+     *      'reference' => <string> Location of string in code.
+     *      'obsolete'  => <bool> Is the message obsolete?
+     *      'fuzzy'     => <bool> Is the message "fuzzy"?
+     *      'flags'     => <string> Flags of the entry. Internal usage.
+     *  )
+     *
+     *  todo: What means the line "#@ "???
+     *
+     *   #~ (old entry)
+     *   # @ default
+     *   #, fuzzy
+     *   #~ msgid "Editar datos"
+     *   #~ msgstr "editar dades"
      *
      * @param $filePath
      *
@@ -73,13 +78,18 @@ class Parser
             }
         }
 
+        $this->entriesAsArrays = array();
+        $this->entries = array();
+        $this->headers = array();
+
         $handle = fopen($filePath, 'r');
         $hash = array();
         $fuzzy = false;
         $tcomment = null;
         $ccomment = null;
         $reference = null;
-        $entry = $entryTemp = array();
+        $entry = array();
+        $entryTemp = array();
         $state = null;
         $justNewEntry = false; // A new entry has ben just inserted
 
@@ -211,8 +221,7 @@ class Parser
 
         // Cleanup data, merge multiline entries, reindex hash for ksort
         $temp = $hash;
-        $this->entriesAsArrays = array();
-        $this->entries = array();
+        $counter = 0;
         foreach ($temp as $entry) {
             foreach ($entry as & $v) {
                 $v = $this->clean($v);
@@ -224,11 +233,46 @@ class Parser
 
             $id = is_array($entry['msgid']) ? implode('', $entry['msgid']) : $entry['msgid'];
 
+            if ($counter === 0 && $id === '') {
+                //header entry
+                $entry['header'] = true;
+                $this->setHeaders($this->parseHeaders($entry));
+            }
+
             $this->entriesAsArrays[$id] = $entry;
             $this->entries[$id] = new Entry($entry);
+
+            $counter++;
         }
 
         return $this->entriesAsArrays;
+    }
+
+    /**
+     * @param $entry
+     *
+     * @return array
+     */
+    protected function parseHeaders($entry)
+    {
+        $headers = array();
+
+        if (is_array($entry['msgstr'])) {
+            foreach ($entry['msgstr'] as $headerRaw) {
+                $parts = explode(':', $headerRaw);
+                if (count($parts) < 2) {
+                    continue;
+                }
+
+                $parts[1] = ltrim($parts[1]);
+                $values = array_slice($parts, 1);
+                $headerValue = rtrim(implode(':', $values));
+
+                $headers[$parts[0]] = $headerValue;
+            }
+        }
+
+        return $headers;
     }
 
     /**
@@ -262,20 +306,7 @@ class Parser
 
 
     /**
-     * Writes entries into the po file.
-
-        It writes the entries stored in the object.
-        Example:
-
-        1. Parse the file:
-            $pofile = new PoParser();
-            $pofile->read('myfile.po');
-
-        2. Modify those entries you want.
-            $pofile->updateEntry($msgid, $mgstr);
-
-        3. Save changes
-            $pofile->write('myfile.po');
+     * Write entries into the po file.
      *
      * @param $filePath
      */
@@ -439,5 +470,21 @@ class Parser
         }
 
         return $x;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param array $headers
+     */
+    public function setHeaders($headers)
+    {
+        $this->headers = $headers;
     }
 }

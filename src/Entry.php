@@ -25,6 +25,11 @@ class Entry
     protected $obsolete = false;
 
     /**
+     * @var bool
+     */
+    protected $header = false;
+
+    /**
      * @var array
      */
     protected $translations = array();
@@ -38,7 +43,16 @@ class Entry
         $this->msgIdPlural = isset($properties['msgid_plural']) ? $properties['msgid_plural'] : null;
         $this->fuzzy = !empty($properties['fuzzy']);
         $this->obsolete = !empty($properties['obsolete']);
+        $this->header = !empty($properties['header']);
         $this->translations = $properties['msgstr'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isHeader()
+    {
+        return $this->header;
     }
 
     /**
