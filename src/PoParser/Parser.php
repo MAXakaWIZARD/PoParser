@@ -5,7 +5,7 @@ namespace PoParser;
 class Parser
 {
     /**
-     * @var PoEntry[]
+     * @var Entry[]
      */
     protected $entries = array();
 
@@ -15,7 +15,7 @@ class Parser
     protected $entriesAsArrays = array();
 
     /**
-     * @return PoEntry[]
+     * @return Entry[]
      */
     public function getEntries()
     {
@@ -230,6 +230,15 @@ class Parser
         return $this->entriesAsArrays;
     }
 
+    /**
+     * set all entries at once
+     *
+     * @param $entries
+     */
+    public function setEntries($entries)
+    {
+        $this->entriesAsArrays = $entries;
+    }
 
     /**
      * Allows modification a msgid.
