@@ -76,11 +76,12 @@ class Parser
         $handle = fopen($filePath, 'r');
         $hash = array();
         $fuzzy = false;
-        $tcomment = $ccomment = $reference = null;
+        $tcomment = null;
+        $ccomment = null;
+        $reference = null;
         $entry = $entryTemp = array();
         $state = null;
         $justNewEntry = false; // A new entry has ben just inserted
-
 
         while (!feof($handle)) {
             $line = trim(fgets($handle));
@@ -337,7 +338,7 @@ class Parser
             }
 
             if (isset($entry['msgid_plural'])) {
-					if (is_array($entry['msgid_plural'])) {
+                if (is_array($entry['msgid_plural'])) {
                     $entry['msgid_plural'] = implode('', $entry['msgid_plural']);
                 }
                 fwrite($handle, 'msgid_plural ' . $this->cleanExport($entry['msgid_plural']) . "\n");
