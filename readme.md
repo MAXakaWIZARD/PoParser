@@ -1,4 +1,5 @@
 # PoParser
+[![Build Status](https://api.travis-ci.org/MAXakaWIZARD/PoParser.png?branch=master)](https://travis-ci.org/MAXakaWIZARD/PoParser) 
 [![Latest Stable Version](https://poser.pugx.org/maxakawizard/po-parser/v/stable.svg)](https://packagist.org/packages/maxakawizard/po-parser) 
 [![Total Downloads](https://poser.pugx.org/maxakawizard/po-parser/downloads.svg)](https://packagist.org/packages/maxakawizard/po-parser) 
 [![Latest Unstable Version](https://poser.pugx.org/maxakawizard/po-parser/v/unstable.svg)](https://packagist.org/packages/maxakawizard/po-parser) 
