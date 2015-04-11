@@ -34,7 +34,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testGeneral()
     {
-        $this->parser->read(BASE_PATH . '/tests/data/general.po');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $entries = $this->parser->getEntries();
 
@@ -57,7 +57,7 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testHeaders()
     {
-        $this->parser->read(BASE_PATH . '/tests/data/general.po');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $correctData = array(
             'Project-Id-Version' => 'test',
@@ -92,5 +92,22 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($idx === 0, $entry->isHeader());
             $idx++;
         }
+    }
+
+    /**
+     *
+     */
+    public function testWrite()
+    {
+        $sourcePath = TEST_DATA_PATH . '/general.po';
+        $this->parser->read($sourcePath);
+
+        $writePath = TEST_DATA_PATH . '/general1.po';
+        $this->parser->write($writePath);
+
+        $this->assertFileExists($writePath);
+        $this->assertFileEquals($sourcePath, $writePath);
+
+        unlink($writePath);
     }
 }
