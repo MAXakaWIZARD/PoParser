@@ -15,4 +15,4 @@ script:
  - phpunit
 
 after_script:
- - php vendor/bin/coveralls -v
+ - if [[ "$TRAVIS_PHP_VERSION" == '5.6' ]]; then php vendor/bin/coveralls -v ; fi

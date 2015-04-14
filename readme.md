@@ -1,7 +1,7 @@
 # PoParser
 [![Build Status](https://api.travis-ci.org/MAXakaWIZARD/PoParser.png?branch=master)](https://travis-ci.org/MAXakaWIZARD/PoParser) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/?branch=master)
-[![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PoParser/badge.svg)](https://coveralls.io/r/MAXakaWIZARD/PoParser)
+[![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PoParser/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PoParser?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/maxakawizard/po-parser/v/stable.svg)](https://packagist.org/packages/maxakawizard/po-parser) 
 [![Total Downloads](https://poser.pugx.org/maxakawizard/po-parser/downloads.svg)](https://packagist.org/packages/maxakawizard/po-parser) 
 [![License](https://poser.pugx.org/maxakawizard/po-parser/license.svg)](https://packagist.org/packages/maxakawizard/po-parser)
