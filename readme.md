@@ -52,8 +52,9 @@ $parser->write('my-pofile.po');
 ```
 
 ## Todo
-* Improve interface to edit entries.
-* Discover what's the meaning of "#@ " line.
+* Improve interface to edit entries
+* Ability to change any entry fields
+* Discover what's the meaning of "#@ " line
 
 ## License
 This library is released under [MIT](http://www.tldrlegal.com/license/mit-license) license.

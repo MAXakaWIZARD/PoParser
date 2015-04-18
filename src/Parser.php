@@ -57,8 +57,6 @@ class Parser
      *      'flags'     => <string> Flags of the entry. Internal usage.
      *  )
      *
-     *  todo: What means the line "#@ "???
-     *
      *   #~ (old entry)
      *   # @ default
      *   #, fuzzy
@@ -78,11 +76,10 @@ class Parser
         $this->entries = array();
         $this->headers = array();
 
-        $hash = array();
+        $rawEntries = array();
         $entry = array();
-        $entryTemp = array();
         $state = null;
-        $justNewEntry = false; // A new entry has ben just inserted
+        $justNewEntry = false;
 
         while (!feof($this->handle)) {
             $line = trim(fgets($this->handle));
@@ -94,7 +91,7 @@ class Parser
                 }
 
                 // A new entry is found!
-                $hash[] = $entry;
+                $rawEntries[] = $entry;
                 $entry = array();
                 $state = null;
                 $justNewEntry = true;
@@ -115,16 +112,14 @@ class Parser
                     break;
                 case '#':
                     //translation-comments
-                    $entryTemp['tcomment'] = $data;
                     $entry['tcomment'] = $data;
                     break;
                 case '#.':
                     //extracted-comments
-                    $entryTemp['ccomment'] = $data;
+                    $entry['ccomment'] = $data;
                     break;
                 case '#:':
                     //reference
-                    $entryTemp['reference'][] = addslashes($data);
                     $entry['reference'][] = addslashes($data);
                     break;
                 case '#|':
@@ -175,12 +170,10 @@ class Parser
                         $entry[$state][] = $data;
                     } else {
                         // continued lines
-                        //echo "O NDE ELSE:".$state.':'.$entry['msgid'];
                         switch ($state) {
                             case 'msgctxt':
                             case 'msgid':
                             case 'msgid_plural':
-                                //$entry[$state] .= "\n" . $line;
                                 if (is_string($entry[$state])) {
                                     // Convert it to array
                                     $entry[$state] = array($entry[$state]);
@@ -192,7 +185,6 @@ class Parser
                                 if ($entry['msgid'] == "\"\"") {
                                     $entry['msgstr'][] = trim($line, '"');
                                 } else {
-                                    //$entry['msgstr'][sizeof($entry['msgstr']) - 1] .= "\n" . $line;
                                     $entry['msgstr'][] = trim($line, '"');
                                 }
                                 break;
@@ -207,10 +199,10 @@ class Parser
 
         // add final entry
         if ($state == 'msgstr') {
-            $hash[] = $entry;
+            $rawEntries[] = $entry;
         }
 
-        $this->prepareResults($hash);
+        $this->prepareResults($rawEntries);
 
         return $this->entriesAsArrays;
     }
@@ -335,7 +327,6 @@ class Parser
     /**
      * Allows modification a msgid.
      * By default disabled fuzzy flag if defined.
-     * todo Allow change any of the fields of the entry.
      *
      * @param $original
      * @param $translation
@@ -362,7 +353,7 @@ class Parser
     {
         $handle = $this->openFileForWrite($filePath);
 
-        //	fwrite( $handle, "\xEF\xBB\xBF" );	//UTF-8 BOM header
+        // fwrite( $handle, "\xEF\xBB\xBF" );	//UTF-8 BOM header
 
         $entriesCount = count($this->entriesAsArrays);
         $counter = 0;
@@ -480,7 +471,7 @@ class Parser
     public function clearFuzzy()
     {
         foreach ($this->entriesAsArrays as &$str) {
-            if (isset($str['fuzzy']) && $str['fuzzy'] == true) {
+            if (isset($str['fuzzy']) && $str['fuzzy'] === true) {
                 $flags = $str['flags'];
                 $str['flags'] = str_replace('fuzzy', '', $flags);
                 $str['fuzzy'] = false;
