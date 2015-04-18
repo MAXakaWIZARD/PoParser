@@ -2,9 +2,14 @@
 [![Build Status](https://api.travis-ci.org/MAXakaWIZARD/PoParser.png?branch=master)](https://travis-ci.org/MAXakaWIZARD/PoParser) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PoParser/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PoParser?branch=master)
-[![Latest Stable Version](https://poser.pugx.org/maxakawizard/po-parser/v/stable.svg)](https://packagist.org/packages/maxakawizard/po-parser) 
-[![Total Downloads](https://poser.pugx.org/maxakawizard/po-parser/downloads.svg)](https://packagist.org/packages/maxakawizard/po-parser) 
-[![License](https://poser.pugx.org/maxakawizard/po-parser/license.svg)](https://packagist.org/packages/maxakawizard/po-parser)
+[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/14f7f95a-b068-44b8-8b0c-64575764944d.svg)](https://insight.sensiolabs.com/projects/14f7f95a-b068-44b8-8b0c-64575764944d)
+
+[![GitHub tag](https://img.shields.io/github/tag/MAXakaWIZARD/PoParser.svg?label=latest)](https://packagist.org/packages/maxakawizard/po-parser) 
+[![Packagist](https://img.shields.io/packagist/dt/maxakawizard/po-parser.svg)](https://packagist.org/packages/maxakawizard/po-parser)
+[![Packagist](https://img.shields.io/packagist/dm/maxakawizard/po-parser.svg)](https://packagist.org/packages/maxakawizard/po-parser)
+
+[![Minimum PHP Version](http://img.shields.io/badge/php-%3E%3D%205.3-8892BF.svg)](https://php.net/)
+[![License](https://img.shields.io/packagist/l/maxakawizard/po-parser.svg)](https://packagist.org/packages/maxakawizard/po-parser)
 
 Gettext *.po files parser for PHP.
 
