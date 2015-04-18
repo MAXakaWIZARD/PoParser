@@ -72,10 +72,6 @@ class Parser
     {
         $this->handle = $this->openFileForRead($filePath);
 
-        $this->entriesAsArrays = array();
-        $this->entries = array();
-        $this->headers = array();
-
         $rawEntries = array();
         $entry = array();
         $state = null;
@@ -181,15 +177,11 @@ class Parser
                                 $entry[$state][] = $line;
                                 break;
                             case 'msgstr':
-                                //Special fix where msgid is ""
-                                if ($entry['msgid'] == "\"\"") {
-                                    $entry['msgstr'][] = trim($line, '"');
-                                } else {
-                                    $entry['msgstr'][] = trim($line, '"');
-                                }
+                                $entry['msgstr'][] = trim($line, '"');
                                 break;
                             default:
                                 throw new \Exception('Parse error!');
+                                break;
                         }
                     }
                     break;
@@ -216,6 +208,10 @@ class Parser
      */
     protected function prepareResults(array $data)
     {
+        $this->entriesAsArrays = array();
+        $this->entries = array();
+        $this->headers = array();
+
         $counter = 0;
         foreach ($data as $entry) {
             foreach ($entry as &$v) {
@@ -442,15 +438,13 @@ class Parser
             return $entryStr;
         }
 
-        if ($isPlural) {
-            foreach ($entry['msgstr'] as $i => $t) {
+        foreach ($entry['msgstr'] as $i => $t) {
+            if ($isPlural) {
                 if ($isObsolete) {
                     $entryStr .= "#~ ";
                 }
                 $entryStr .= "msgstr[$i] " . $this->cleanExport($t) . "\n";
-            }
-        } else {
-            foreach ($entry['msgstr'] as $i => $t) {
+            } else {
                 if ($i == 0) {
                     if ($isObsolete) {
                         $entryStr .= "#~ ";
