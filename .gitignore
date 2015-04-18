@@ -2,3 +2,4 @@ vendor
 composer.lock
 *.phar
 build
+phpunit.xml
