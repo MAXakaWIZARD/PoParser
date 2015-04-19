@@ -17,10 +17,23 @@ msgstr ""
 "X-Generator: Poedit 1.7.1\n"
 "X-Poedit-SearchPath-0: /path/to/project\n"
 
+# translator's comment
+#. comment
 #: /path/to/1.php:1
 msgid "cat"
 msgstr "gato"
 
 #: /path/to/2.php:1
+#: /path/to/3.php:3
+#, php-format, another-flag
+msgctxt "some context"
 msgid "dog"
 msgstr "perro"
+
+#: /path/to/4.php:1
+#, fuzzy
+msgid "racoon"
+msgstr "mapache"
+
+#~ msgid "hare"
+#~ msgstr "liebre"

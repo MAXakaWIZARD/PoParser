@@ -32,6 +32,11 @@ class Entry
     /**
      * @var array
      */
+    protected $flags = array();
+
+    /**
+     * @var array
+     */
     protected $translations = array();
 
     /**
@@ -41,10 +46,14 @@ class Entry
     {
         $this->msgId = $properties['msgid'];
         $this->msgIdPlural = isset($properties['msgid_plural']) ? $properties['msgid_plural'] : null;
-        $this->fuzzy = !empty($properties['fuzzy']);
-        $this->obsolete = !empty($properties['obsolete']);
-        $this->header = !empty($properties['header']);
+        $this->fuzzy = isset($properties['fuzzy']) && $properties['fuzzy'] === true;
+        $this->obsolete = isset($properties['obsolete']) && $properties['obsolete'] === true;
+        $this->header = isset($properties['header']) && $properties['header'] === true;
         $this->translations = $properties['msgstr'];
+
+        if (isset($properties['flags']) && is_array($properties['flags'])) {
+            $this->flags = $properties['flags'];
+        }
     }
 
     /**
@@ -111,5 +120,15 @@ class Entry
     public function isPlural()
     {
         return !empty($this->msgIdPlural);
+    }
+
+    /**
+     * @param $flag
+     *
+     * @return bool
+     */
+    public function hasFlag($flag)
+    {
+        return array_search($flag, $this->flags, true) !== false;
     }
 }

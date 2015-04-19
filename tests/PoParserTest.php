@@ -37,19 +37,69 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $entries = $this->parser->getEntries();
+        //var_dump($this->parser->getEntriesAsArrays());
+        //exit;
 
-        $correctData = array(
-            array('', ''),
-            array('cat', 'gato'),
-            array('dog', 'perro')
-        );
+        $correctData = $this->getGeneralCorrectData();
 
         $idx = 0;
         foreach ($entries as $entry) {
-            $this->assertEquals($correctData[$idx][0], $entry->getMsgId());
-            $this->assertEquals($correctData[$idx][1], $entry->getTranslation(0));
+            $item = $correctData[$idx];
+            $this->assertEquals($item['msgid'], $entry->getMsgId());
+            $this->assertEquals($item['msgstr'], $entry->getTranslation(0));
+            $this->assertEquals($item['fuzzy'], $entry->isFuzzy(), $entry->getMsgId() . ' should be fuzzy');
+            $this->assertEquals($item['obsolete'], $entry->isObsolete(), $entry->getMsgId() . ' should be obsolete');
+
+            foreach ($item['flags'] as $flag) {
+                $this->assertTrue($entry->hasFlag($flag), $entry->getMsgId() . ' should have flag: ' . $flag);
+            }
+
             $idx++;
         }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getGeneralCorrectData()
+    {
+        return array(
+            array(
+                'msgid' => '',
+                'msgstr' => '',
+                'fuzzy' => false,
+                'obsolete' => false,
+                'flags' => array()
+            ),
+            array(
+                'msgid' => 'cat',
+                'msgstr' => 'gato',
+                'fuzzy' => false,
+                'obsolete' => false,
+                'flags' => array()
+            ),
+            array(
+                'msgid' => 'dog',
+                'msgstr' => 'perro',
+                'fuzzy' => false,
+                'obsolete' => false,
+                'flags' => array('php-format', 'another-flag')
+            ),
+            array(
+                'msgid' => 'racoon',
+                'msgstr' => 'mapache',
+                'fuzzy' => true,
+                'obsolete' => false,
+                'flags' => array('fuzzy')
+            ),
+            array(
+                'msgid' => 'hare',
+                'msgstr' => 'liebre',
+                'fuzzy' => false,
+                'obsolete' => true,
+                'flags' => array()
+            ),
+        );
     }
 
     /**
