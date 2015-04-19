@@ -52,9 +52,11 @@ $parser->write('my-pofile.po');
 ```
 
 ## Todo
-* Improve interface to edit entries
+* Improve entries edit interface
 * Ability to change any entry fields
 * Discover what's the meaning of "#@ " line
+* Fix multiline `msgstr` processing (for singular and plural entries)
+* Implement previous untranslated strings support
 
 ## License
 This library is released under [MIT](http://www.tldrlegal.com/license/mit-license) license.
