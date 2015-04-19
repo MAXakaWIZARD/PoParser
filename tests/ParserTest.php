@@ -147,6 +147,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                 $this->assertEquals($item['msgstr'], $entry->getTranslation(0));
             }
 
+            if (isset($item['references'])) {
+                $this->assertSame(
+                    $item['references'],
+                    $entry->getReferences(),
+                    $entry->getMsgId() . ' should have references: ' . implode(', ', $item['references'])
+                );
+            }
+
             $idx++;
         }
     }
@@ -182,7 +190,11 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                 'fuzzy' => false,
                 'obsolete' => false,
                 'plural' => false,
-                'flags' => array('php-format', 'another-flag')
+                'flags' => array('php-format', 'another-flag'),
+                'references' => array(
+                    '/path/to/2.php:1',
+                    '/path/to/3.php:3'
+                )
             ),
             array(
                 'msgid' => 'racoon',

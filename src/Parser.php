@@ -65,10 +65,10 @@ class Parser
      *      'msgstr'    => <string> Message translation.
      *      'tcomment'  => <string> Comment from translator.
      *      'ccomment'  => <string> Extracted comments from code.
-     *      'reference' => <string> Location of string in code.
+     *      'references' => <array> Location of string in code.
      *      'obsolete'  => <bool> Is the message obsolete?
      *      'fuzzy'     => <bool> Is the message "fuzzy"?
-     *      'flags'     => <string> Flags of the entry. Internal usage.
+     *      'flags'     => <array> Flags of the entry. Internal usage.
      *  )
      *
      *   #~ (old entry)
@@ -141,7 +141,7 @@ class Parser
                 $this->currentEntry['ccomment'] = $data;
                 break;
             case '#:':
-                $this->currentEntry['reference'][] = addslashes($data);
+                $this->currentEntry['references'][] = addslashes($data);
                 break;
             case '#|':
                 //msgid previous-untranslated-string
@@ -278,6 +278,7 @@ class Parser
             'obsolete' => false,
             'fuzzy' => false,
             'flags' => array(),
+            'references' => array(),
             'ccomment' => '',
             'tcomment' => '',
         );

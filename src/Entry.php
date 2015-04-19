@@ -45,6 +45,11 @@ class Entry
     protected $translations = array();
 
     /**
+     * @var array
+     */
+    protected $references = array();
+
+    /**
      * @var string
      */
     protected $extractedComment;
@@ -68,6 +73,7 @@ class Entry
         $this->obsolete = isset($properties['obsolete']) && $properties['obsolete'] === true;
         $this->header = isset($properties['header']) && $properties['header'] === true;
         $this->translations = $properties['msgstr'];
+        $this->references = $properties['references'];
 
         if (isset($properties['flags']) && is_array($properties['flags'])) {
             $this->flags = $properties['flags'];
@@ -180,5 +186,13 @@ class Entry
     public function getFlags()
     {
         return $this->flags;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReferences()
+    {
+        return $this->references;
     }
 }

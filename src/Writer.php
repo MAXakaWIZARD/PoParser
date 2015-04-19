@@ -5,12 +5,12 @@ namespace PoParser;
 class Writer
 {
     /**
-     * @param $filePath
-     * @param $entries
+     * @param string $filePath
+     * @param array $entries
      *
      * @throws \Exception
      */
-    public function write($filePath, $entries)
+    public function write($filePath, array $entries)
     {
         $handle = $this->openFile($filePath);
 
@@ -35,10 +35,9 @@ class Writer
     }
 
     /**
-     * @param $filePath
-     *
-     * @return resource
+     * @param string $filePath
      * @throws \Exception
+     * @return resource
      */
     protected function openFile($filePath)
     {
@@ -55,37 +54,38 @@ class Writer
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return string
      */
-    protected function getEntryStr($entry)
+    protected function getEntryStr(array $entry)
     {
         $result = $this->writeComments($entry);
         $result .= $this->writeReferences($entry);
         $result .= $this->writeFlags($entry);
         $result .= $this->writeContext($entry);
-        $result .= $this->writeMsgId($entry);
-        $result .= $this->writeMsgIdPlural($entry);
+        $result .= $this->writeObsolete($entry);
+        $result .= $this->writeMsgId($entry, 'msgid');
+        $result .= $this->writeMsgId($entry, 'msgid_plural');
         $result .= $this->writeMsgStr($entry);
 
         return $result;
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return string
      */
-    protected function writeComments($entry)
+    protected function writeComments(array $entry)
     {
         $result = '';
 
-        if (isset($entry['tcomment']) && $entry['tcomment'] !== '') {
+        if ($entry['tcomment'] !== '') {
             $result .= "# " . $entry['tcomment'] . "\n";
         }
 
-        if (isset($entry['ccomment']) && $entry['ccomment'] !== '') {
+        if ($entry['ccomment'] !== '') {
             $result .= '#. ' . $entry['ccomment'] . "\n";
         }
 
@@ -93,15 +93,15 @@ class Writer
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return string
      */
-    protected function writeFlags($entry)
+    protected function writeFlags(array $entry)
     {
         $result = '';
 
-        if (isset($entry['flags']) && count($entry['flags']) > 0) {
+        if (count($entry['flags']) > 0) {
             $result .= "#, " . implode(', ', $entry['flags']) . "\n";
         }
 
@@ -113,16 +113,16 @@ class Writer
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return string
      */
-    protected function writeReferences($entry)
+    protected function writeReferences(array $entry)
     {
         $result = '';
 
-        if (isset($entry['reference']) && is_array($entry['reference'])) {
-            foreach ($entry['reference'] as $ref) {
+        if (count($entry['references']) > 0) {
+            foreach ($entry['references'] as $ref) {
                 $result .= '#: ' . $ref . "\n";
             }
         }
@@ -131,15 +131,15 @@ class Writer
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return string
      */
-    protected function writeContext($entry)
+    protected function writeContext(array $entry)
     {
         $result = '';
 
-        if (isset($entry['msgctxt']) && $entry['msgctxt'] !== '') {
+        if ($entry['msgctxt'] !== '') {
             $result .= 'msgctxt ' . $this->cleanExport($entry['msgctxt']) . "\n";
         }
 
@@ -147,65 +147,47 @@ class Writer
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return string
      */
-    protected function writeMsgId($entry)
+    protected function writeObsolete(array $entry)
+    {
+        return ($entry['obsolete']) ? "#~ " : '';
+    }
+
+    /**
+     * @param array $entry
+     * @param string $type msgid or msgid_plural
+     *
+     * @return string
+     */
+    protected function writeMsgId(array $entry, $type = 'msgid')
     {
         $result = '';
 
-        if (!isset($entry['msgid'])) {
+        if (!isset($entry[$type])) {
             return $result;
         }
 
-        if ($entry['obsolete']) {
-            $result .= "#~ ";
-        }
-
-        $result .= 'msgid ';
-        if (is_array($entry['msgid'])) {
-            foreach ($entry['msgid'] as $id) {
+        $result .= $type . ' ';
+        if (is_array($entry[$type])) {
+            foreach ($entry[$type] as $id) {
                 $result .= $this->cleanExport($id) . "\n";
             }
         } else {
-            $result .= $this->cleanExport($entry['msgid']) . "\n";
+            $result .= $this->cleanExport($entry[$type]) . "\n";
         }
 
         return $result;
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return string
      */
-    protected function writeMsgIdPlural($entry)
-    {
-        $result = '';
-
-        if (!isset($entry['msgid_plural'])) {
-            return $result;
-        }
-
-        $result .= 'msgid_plural ';
-        if (is_array($entry['msgid_plural'])) {
-            foreach ($entry['msgid_plural'] as $id) {
-                $result .= $this->cleanExport($id) . "\n";
-            }
-        } else {
-            $result .= $this->cleanExport($entry['msgid_plural']) . "\n";
-        }
-
-        return $result;
-    }
-
-    /**
-     * @param $entry
-     *
-     * @return string
-     */
-    protected function writeMsgStr($entry)
+    protected function writeMsgStr(array $entry)
     {
         $result = '';
 
