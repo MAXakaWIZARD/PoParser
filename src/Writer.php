@@ -48,7 +48,7 @@ class Writer
             throw new \Exception('Output file not defined.');
         }
 
-        $handle = fopen($filePath, 'wb');
+        $handle = @fopen($filePath, 'wb');
         if (false === $handle) {
             throw new \Exception("Unable to open file for writing: {$filePath}");
         }

@@ -6,7 +6,7 @@ use PoParser\Parser;
 /**
  *
  */
-class PoParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Parser
@@ -19,14 +19,6 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->parser = new Parser();
-    }
-
-    /**
-     *
-     */
-    public function tearDown()
-    {
-
     }
 
     /**
@@ -142,22 +134,5 @@ class PoParserTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($idx === 0, $entry->isHeader());
             $idx++;
         }
-    }
-
-    /**
-     *
-     */
-    public function testWrite()
-    {
-        $sourcePath = TEST_DATA_PATH . '/general.po';
-        $this->parser->read($sourcePath);
-
-        $writePath = TEST_DATA_PATH . '/general1.po';
-        $this->parser->write($writePath);
-
-        $this->assertFileExists($writePath);
-        $this->assertFileEquals($sourcePath, $writePath);
-
-        unlink($writePath);
     }
 }
