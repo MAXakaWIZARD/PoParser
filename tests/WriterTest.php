@@ -21,6 +21,9 @@ class WriterTest extends \PHPUnit_Framework_TestCase
         $this->parser = new Parser();
     }
 
+    /**
+     *
+     */
     public function tearDown()
     {
         $writePath = TEST_DATA_PATH . '/general1.po';

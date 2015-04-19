@@ -18,8 +18,9 @@ msgstr ""
 "X-Poedit-SearchPath-0: /path/to/project\n"
 
 # translator's comment
-#. comment
+#. some comment
 #: /path/to/1.php:1
+#@ whatever
 msgid "cat"
 msgstr "gato"
 
@@ -27,13 +28,28 @@ msgstr "gato"
 #: /path/to/3.php:3
 #, php-format, another-flag
 msgctxt "some context"
-msgid "dog"
-msgstr "perro"
+msgid "%s, the dog"
+msgstr "%s, perro"
 
 #: /path/to/4.php:1
 #, fuzzy
 msgid "racoon"
 msgstr "mapache"
+
+#: /path/to/4.php:1
+msgid "country"
+msgid_plural "countries"
+msgstr[0] "país"
+msgstr[1] "países"
+
+msgid ""
+"very-very "
+"long string"
+msgid_plural ""
+"very-very "
+"long plural string"
+msgstr[0] "very long translation"
+msgstr[1] "very long translation2"
 
 #~ msgid "hare"
 #~ msgstr "liebre"

@@ -23,7 +23,7 @@ class Writer
                 fwrite($handle, "\n");
             }
 
-            $entryStr = $this->getEntryWriteStr($entry);
+            $entryStr = $this->getEntryStr($entry);
             if ($counter == $entriesCount) {
                 $entryStr = rtrim($entryStr);
             }
@@ -59,15 +59,15 @@ class Writer
      *
      * @return string
      */
-    protected function getEntryWriteStr($entry)
+    protected function getEntryStr($entry)
     {
         $result = '';
 
-        if (isset($entry['tcomment'])) {
+        if (isset($entry['tcomment']) && $entry['tcomment'] !== '') {
             $result .= "# " . $entry['tcomment'] . "\n";
         }
 
-        if (isset($entry['ccomment'])) {
+        if (isset($entry['ccomment']) && $entry['ccomment'] !== '') {
             $result .= '#. ' . $entry['ccomment'] . "\n";
         }
 
@@ -85,13 +85,13 @@ class Writer
             $result .= "#@ " . $entry['@'] . "\n";
         }
 
-        if (isset($entry['msgctxt'])) {
+        if (isset($entry['msgctxt']) && $entry['msgctxt'] !== '') {
             $result .= 'msgctxt ' . $this->cleanExport($entry['msgctxt']) . "\n";
         }
 
-        $result .= $this->getMsgIdStr($entry);
-        $result .= $this->getMsgIdPluralStr($entry);
-        $result .= $this->getMsgStrStr($entry);
+        $result .= $this->getMsgId($entry);
+        $result .= $this->getMsgIdPlural($entry);
+        $result .= $this->getMsgStr($entry);
 
         return $result;
     }
@@ -101,7 +101,7 @@ class Writer
      *
      * @return string
      */
-    protected function getMsgIdStr($entry)
+    protected function getMsgId($entry)
     {
         $result = '';
 
@@ -109,20 +109,17 @@ class Writer
             return $result;
         }
 
-        if (is_array($entry['msgid'])) {
-            $entry['msgid'] = implode('', $entry['msgid']);
-        }
-
-        // Special clean for msgid
-        $msgid = explode("\n", $entry['msgid']);
-
         if ($entry['obsolete']) {
             $result .= "#~ ";
         }
 
         $result .= 'msgid ';
-        foreach ($msgid as $i => $id) {
-            $result .= $this->cleanExport($id) . "\n";
+        if (is_array($entry['msgid'])) {
+            foreach ($entry['msgid'] as $id) {
+                $result .= $this->cleanExport($id) . "\n";
+            }
+        } else {
+            $result .= $this->cleanExport($entry['msgid']) . "\n";
         }
 
         return $result;
@@ -133,15 +130,21 @@ class Writer
      *
      * @return string
      */
-    protected function getMsgIdPluralStr($entry)
+    protected function getMsgIdPlural($entry)
     {
         $result = '';
 
-        if (isset($entry['msgid_plural'])) {
-            if (is_array($entry['msgid_plural'])) {
-                $entry['msgid_plural'] = implode('', $entry['msgid_plural']);
+        if (!isset($entry['msgid_plural'])) {
+            return $result;
+        }
+
+        $result .= 'msgid_plural ';
+        if (is_array($entry['msgid_plural'])) {
+            foreach ($entry['msgid_plural'] as $id) {
+                $result .= $this->cleanExport($id) . "\n";
             }
-            $result .= 'msgid_plural ' . $this->cleanExport($entry['msgid_plural']) . "\n";
+        } else {
+            $result .= $this->cleanExport($entry['msgid_plural']) . "\n";
         }
 
         return $result;
@@ -152,7 +155,7 @@ class Writer
      *
      * @return string
      */
-    protected function getMsgStrStr($entry)
+    protected function getMsgStr($entry)
     {
         $result = '';
 

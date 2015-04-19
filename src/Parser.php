@@ -274,9 +274,12 @@ class Parser
     protected function createNewEntryAsArray()
     {
         return array(
+            'msgctxt' => '',
             'obsolete' => false,
             'fuzzy' => false,
-            'flags' => array()
+            'flags' => array(),
+            'ccomment' => '',
+            'tcomment' => '',
         );
     }
 
@@ -290,11 +293,11 @@ class Parser
     {
         if (empty($filePath)) {
             throw new \Exception('Input file not defined.');
-        } elseif (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new \Exception("File does not exist or is not readable: {$filePath}");
+        } elseif (!file_exists($filePath)) {
+            throw new \Exception("File does not exist: {$filePath}");
         }
 
-        $handle = fopen($filePath, 'r');
+        $handle = @fopen($filePath, 'r');
         if (false === $handle) {
             throw new \Exception("Unable to open file for reading: {$filePath}");
         }
@@ -353,10 +356,9 @@ class Parser
         $this->entriesAsArrays[$original]['fuzzy'] = false;
         $this->entriesAsArrays[$original]['msgstr'] = array($translation);
 
-        if (isset($this->entriesAsArrays[$original]['flags'])) {
-            $flags = $this->entriesAsArrays[$original]['flags'];
-            $this->entriesAsArrays[$original]['flags'] = str_replace('fuzzy', '', $flags);
-        }
+        $flags = $this->entriesAsArrays[$original]['flags'];
+        unset($flags[array_search('fuzzy', $flags, true)]);
+        $this->entriesAsArrays[$original]['flags'] = $flags;
     }
 
 

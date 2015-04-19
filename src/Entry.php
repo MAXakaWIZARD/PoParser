@@ -7,6 +7,11 @@ class Entry
     /**
      * @var string
      */
+    protected $context;
+
+    /**
+     * @var string
+     */
     protected $msgId;
 
     /**
@@ -40,10 +45,23 @@ class Entry
     protected $translations = array();
 
     /**
+     * @var string
+     */
+    protected $extractedComment;
+
+    /**
+     * @var string
+     */
+    protected $translatorComment;
+
+    /**
      * @param $properties
      */
     public function __construct($properties)
     {
+        $this->context = $properties['msgctxt'];
+        $this->translatorComment = $properties['tcomment'];
+        $this->extractedComment = $properties['ccomment'];
         $this->msgId = $properties['msgid'];
         $this->msgIdPlural = isset($properties['msgid_plural']) ? $properties['msgid_plural'] : null;
         $this->fuzzy = isset($properties['fuzzy']) && $properties['fuzzy'] === true;
@@ -130,5 +148,37 @@ class Entry
     public function hasFlag($flag)
     {
         return array_search($flag, $this->flags, true) !== false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtractedComment()
+    {
+        return $this->extractedComment;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslatorComment()
+    {
+        return $this->translatorComment;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFlags()
+    {
+        return $this->flags;
     }
 }
