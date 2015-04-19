@@ -12,7 +12,7 @@ class Writer
      */
     public function write($filePath, $entries)
     {
-        $handle = $this->openFileForWrite($filePath);
+        $handle = $this->openFile($filePath);
 
         $entriesCount = count($entries);
         $counter = 0;
@@ -40,7 +40,7 @@ class Writer
      * @return resource
      * @throws \Exception
      */
-    protected function openFileForWrite($filePath)
+    protected function openFile($filePath)
     {
         if (empty($filePath)) {
             throw new \Exception('Output file not defined.');
@@ -61,6 +61,24 @@ class Writer
      */
     protected function getEntryStr($entry)
     {
+        $result = $this->writeComments($entry);
+        $result .= $this->writeReferences($entry);
+        $result .= $this->writeFlags($entry);
+        $result .= $this->writeContext($entry);
+        $result .= $this->writeMsgId($entry);
+        $result .= $this->writeMsgIdPlural($entry);
+        $result .= $this->writeMsgStr($entry);
+
+        return $result;
+    }
+
+    /**
+     * @param $entry
+     *
+     * @return string
+     */
+    protected function writeComments($entry)
+    {
         $result = '';
 
         if (isset($entry['tcomment']) && $entry['tcomment'] !== '') {
@@ -71,11 +89,17 @@ class Writer
             $result .= '#. ' . $entry['ccomment'] . "\n";
         }
 
-        if (isset($entry['reference']) && is_array($entry['reference'])) {
-            foreach ($entry['reference'] as $ref) {
-                $result .= '#: ' . $ref . "\n";
-            }
-        }
+        return $result;
+    }
+
+    /**
+     * @param $entry
+     *
+     * @return string
+     */
+    protected function writeFlags($entry)
+    {
+        $result = '';
 
         if (isset($entry['flags']) && count($entry['flags']) > 0) {
             $result .= "#, " . implode(', ', $entry['flags']) . "\n";
@@ -85,13 +109,23 @@ class Writer
             $result .= "#@ " . $entry['@'] . "\n";
         }
 
-        if (isset($entry['msgctxt']) && $entry['msgctxt'] !== '') {
-            $result .= 'msgctxt ' . $this->cleanExport($entry['msgctxt']) . "\n";
-        }
+        return $result;
+    }
 
-        $result .= $this->getMsgId($entry);
-        $result .= $this->getMsgIdPlural($entry);
-        $result .= $this->getMsgStr($entry);
+    /**
+     * @param $entry
+     *
+     * @return string
+     */
+    protected function writeReferences($entry)
+    {
+        $result = '';
+
+        if (isset($entry['reference']) && is_array($entry['reference'])) {
+            foreach ($entry['reference'] as $ref) {
+                $result .= '#: ' . $ref . "\n";
+            }
+        }
 
         return $result;
     }
@@ -101,7 +135,23 @@ class Writer
      *
      * @return string
      */
-    protected function getMsgId($entry)
+    protected function writeContext($entry)
+    {
+        $result = '';
+
+        if (isset($entry['msgctxt']) && $entry['msgctxt'] !== '') {
+            $result .= 'msgctxt ' . $this->cleanExport($entry['msgctxt']) . "\n";
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $entry
+     *
+     * @return string
+     */
+    protected function writeMsgId($entry)
     {
         $result = '';
 
@@ -130,7 +180,7 @@ class Writer
      *
      * @return string
      */
-    protected function getMsgIdPlural($entry)
+    protected function writeMsgIdPlural($entry)
     {
         $result = '';
 
@@ -155,7 +205,7 @@ class Writer
      *
      * @return string
      */
-    protected function getMsgStr($entry)
+    protected function writeMsgStr($entry)
     {
         $result = '';
 

@@ -88,7 +88,7 @@ class Parser
         $this->state = null;
         $this->justNewEntry = false;
 
-        $handle = $this->openFileForRead($filePath);
+        $handle = $this->openFile($filePath);
         while (!feof($handle)) {
             $line = trim(fgets($handle));
             $this->processLine($line);
@@ -289,7 +289,7 @@ class Parser
      * @throws \Exception
      * @return resource
      */
-    protected function openFileForRead($filePath)
+    protected function openFile($filePath)
     {
         if (empty($filePath)) {
             throw new \Exception('Input file not defined.');
