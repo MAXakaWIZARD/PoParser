@@ -77,10 +77,9 @@ class Parser
      *   #~ msgid "Editar datos"
      *   #~ msgstr "editar dades"
      *
-     * @param $filePath
-     *
-     * @return array|bool
+     * @param string $filePath
      * @throws \Exception
+     * @return array|bool
      */
     public function read($filePath)
     {
@@ -103,7 +102,7 @@ class Parser
     }
 
     /**
-     * @param $line
+     * @param string $line
      *
      * @throws \Exception
      */
@@ -178,7 +177,7 @@ class Parser
     }
 
     /**
-     * @param $line
+     * @param string $line
      *
      * @throws \Exception
      */
@@ -199,7 +198,6 @@ class Parser
                 break;
             default:
                 throw new \Exception('Parse error!');
-                break;
         }
     }
 
@@ -283,10 +281,10 @@ class Parser
     }
 
     /**
-     * @param $filePath
+     * @param string $filePath
      *
-     * @return resource
      * @throws \Exception
+     * @return resource
      */
     protected function openFileForRead($filePath)
     {
@@ -305,11 +303,11 @@ class Parser
     }
 
     /**
-     * @param $entry
+     * @param array $entry
      *
      * @return array
      */
-    protected function parseHeaders($entry)
+    protected function parseHeaders(array $entry)
     {
         $headers = array();
 
@@ -336,9 +334,9 @@ class Parser
     /**
      * set all entries at once
      *
-     * @param $entries
+     * @param array $entries
      */
-    public function setEntries($entries)
+    public function setEntries(array $entries)
     {
         $this->entriesAsArrays = $entries;
     }
@@ -365,7 +363,7 @@ class Parser
     /**
      * Write entries into the po file.
      *
-     * @param $filePath
+     * @param string $filePath
      * @throws \Exception
      */
     public function write($filePath)

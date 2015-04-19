@@ -14,8 +14,6 @@ class Writer
     {
         $handle = $this->openFileForWrite($filePath);
 
-        // fwrite( $handle, "\xEF\xBB\xBF" );	//UTF-8 BOM header
-
         $entriesCount = count($entries);
         $counter = 0;
         foreach ($entries as $entry) {
