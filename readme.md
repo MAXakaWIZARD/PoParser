@@ -1,6 +1,7 @@
 # PoParser
 [![Build Status](https://api.travis-ci.org/MAXakaWIZARD/PoParser.png?branch=master)](https://travis-ci.org/MAXakaWIZARD/PoParser) 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/?branch=master)
+[![Code Climate](https://codeclimate.com/github/MAXakaWIZARD/PoParser/badges/gpa.svg)](https://codeclimate.com/github/MAXakaWIZARD/PoParser)
 [![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PoParser/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PoParser?branch=master)
 [![SensioLabs Insight](https://img.shields.io/sensiolabs/i/14f7f95a-b068-44b8-8b0c-64575764944d.svg)](https://insight.sensiolabs.com/projects/14f7f95a-b068-44b8-8b0c-64575764944d)
 
