@@ -69,15 +69,12 @@ class Entry
         $this->extractedComment = $properties['ccomment'];
         $this->msgId = $properties['msgid'];
         $this->msgIdPlural = isset($properties['msgid_plural']) ? $properties['msgid_plural'] : null;
-        $this->fuzzy = isset($properties['fuzzy']) && $properties['fuzzy'] === true;
-        $this->obsolete = isset($properties['obsolete']) && $properties['obsolete'] === true;
-        $this->header = isset($properties['header']) && $properties['header'] === true;
+        $this->fuzzy = $properties['fuzzy'] === true;
+        $this->obsolete = $properties['obsolete'] === true;
+        $this->header = $properties['header'] === true;
         $this->translations = $properties['msgstr'];
         $this->references = $properties['references'];
-
-        if (isset($properties['flags']) && is_array($properties['flags'])) {
-            $this->flags = $properties['flags'];
-        }
+        $this->flags = $properties['flags'];
     }
 
     /**

@@ -109,39 +109,83 @@ class Parser
     protected function processLine($line)
     {
         if ($line === '') {
-            if ($this->justNewEntry) {
-                // Two consecutive blank lines
-                return;
-            }
-
-            // A new entry is found
-            $this->rawEntries[] = $this->currentEntry;
-            $this->currentEntry = $this->createNewEntryAsArray();
-            $this->state = null;
-            $this->justNewEntry = true;
+            $this->handleBlankLine();
             return;
         }
 
         $this->justNewEntry = false;
 
-        $split = preg_split('/\s/ ', $line, 2);
-        $key = $split[0];
-        $data = isset($split[1]) ? $split[1] : null;
+        $data = $this->parseLine($line);
 
-        switch ($key) {
+        if ($data['key'][0] === '#') {
+            $this->handleComment($data);
+            return;
+        }
+
+        $this->handleOtherCases($data, $line);
+    }
+
+    /**
+     *
+     */
+    protected function handleBlankLine()
+    {
+        if ($this->justNewEntry) {
+            // Two consecutive blank lines
+            return;
+        }
+
+        // A new entry is found
+        $this->rawEntries[] = $this->currentEntry;
+        $this->currentEntry = $this->createNewEntryAsArray();
+        $this->state = null;
+        $this->justNewEntry = true;
+    }
+
+    /**
+     * @param $line
+     *
+     * @return array
+     */
+    protected function parseLine($line)
+    {
+        $split = preg_split('/\s/ ', $line, 2);
+
+        return array(
+            'key' => $split[0],
+            'value' => isset($split[1]) ? $split[1] : null
+        );
+    }
+
+    /**
+     * @param $data
+     *
+     * @return array
+     */
+    protected function parseFlags($data)
+    {
+        return preg_split('/,\s*/', $data);
+    }
+
+    /**
+     * @param $data
+     */
+    protected function handleComment($data)
+    {
+        switch ($data['key']) {
+            case '#:':
+                $this->currentEntry['references'][] = addslashes($data['value']);
+                break;
             case '#,':
                 //flag
-                $this->currentEntry['flags'] = preg_split('/,\s*/', $data);
+                $this->currentEntry['flags'] = $this->parseFlags($data['value']);
                 $this->currentEntry['fuzzy'] = in_array('fuzzy', $this->currentEntry['flags'], true);
                 break;
             case '#':
-                $this->currentEntry['tcomment'] = $data;
+                $this->currentEntry['tcomment'] = $data['value'];
                 break;
             case '#.':
-                $this->currentEntry['ccomment'] = $data;
-                break;
-            case '#:':
-                $this->currentEntry['references'][] = addslashes($data);
+                $this->currentEntry['ccomment'] = $data['value'];
                 break;
             case '#|':
                 //msgid previous-untranslated-string
@@ -149,28 +193,39 @@ class Parser
                 break;
             case '#@':
                 // ignore #@ default
-                $this->currentEntry['@'] = $data;
+                $this->currentEntry['@'] = $data['value'];
                 break;
             case '#~':
-                $this->processObsoleteEntry($data);
+                $this->processObsoleteEntry($data['value']);
                 break;
+            default:
+                break;
+        }
+    }
+
+    /**
+     * @param $data
+     * @param $rawLine
+     *
+     * @throws \Exception
+     */
+    protected function handleOtherCases($data, $rawLine)
+    {
+        switch ($data['key']) {
             case 'msgctxt':
             case 'msgid':
             case 'msgid_plural':
-                $this->state = $key;
-                $this->currentEntry[$this->state] = $data;
-                break;
             case 'msgstr':
-                $this->state = 'msgstr';
-                $this->currentEntry[$this->state][] = $data;
+                $this->state = $data['key'];
+                $this->addEntryData($data['value']);
                 break;
             default:
-                if (strpos($key, 'msgstr[') !== false) {
+                if (strpos($data['key'], 'msgstr[') !== false) {
                     // translated plurals
                     $this->state = 'msgstr';
-                    $this->currentEntry[$this->state][] = $data;
+                    $this->addEntryData($data['value']);
                 } else {
-                    $this->processContinuedLineInSameState($line);
+                    $this->processContinuedLineInSameState($rawLine);
                 }
                 break;
         }
@@ -225,6 +280,18 @@ class Parser
     }
 
     /**
+     * @param $value
+     */
+    protected function addEntryData($value)
+    {
+        if ($this->state === 'msgstr') {
+            $this->currentEntry[$this->state][] = $value;
+        } else {
+            $this->currentEntry[$this->state] = $value;
+        }
+    }
+
+    /**
      *
      */
     protected function addFinalEntry()
@@ -247,17 +314,9 @@ class Parser
 
         $counter = 0;
         foreach ($this->rawEntries as $entry) {
-            foreach ($entry as &$field) {
-                $field = $this->clean($field);
-            }
+            $entry = $this->prepareEntry($entry, $counter);
 
-            $id = is_array($entry['msgid']) ? implode('', $entry['msgid']) : $entry['msgid'];
-
-            if ($counter === 0 && $id === '') {
-                //header entry
-                $entry['header'] = true;
-                $this->setHeaders($this->parseHeaders($entry));
-            }
+            $id = $this->getMsgId($entry);
 
             $this->entriesAsArrays[$id] = $entry;
             $this->entries[$id] = new Entry($entry);
@@ -269,12 +328,46 @@ class Parser
     }
 
     /**
+     * @param $entry
+     *
+     * @return string
+     */
+    protected function getMsgId($entry)
+    {
+        return is_array($entry['msgid']) ? implode('', $entry['msgid']) : $entry['msgid'];
+    }
+
+    /**
+     * @param $entry
+     * @param $index
+     *
+     * @return array
+     */
+    protected function prepareEntry($entry, $index)
+    {
+        foreach ($entry as &$fieldValue) {
+            $fieldValue = $this->clean($fieldValue);
+        }
+
+        $id = $this->getMsgId($entry);
+
+        if ($index === 0 && $id === '') {
+            //header entry
+            $entry['header'] = true;
+            $this->setHeaders($this->parseHeaders($entry));
+        }
+
+        return $entry;
+    }
+
+    /**
      * @return array
      */
     protected function createNewEntryAsArray()
     {
         return array(
             'msgctxt' => '',
+            'header' => false,
             'obsolete' => false,
             'fuzzy' => false,
             'flags' => array(),
@@ -404,15 +497,7 @@ class Parser
                 $value[$k] = $this->clean($v);
             }
         } else {
-            // Remove " from start and end
-            if ($value == '') {
-                return '';
-            }
-
-            if ($value[0] == '"') {
-                $value = substr($value, 1, -1);
-            }
-
+            $value = trim($value, '"');
             $value = stripcslashes($value);
         }
 

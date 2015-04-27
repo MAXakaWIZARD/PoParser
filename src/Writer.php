@@ -17,18 +17,10 @@ class Writer
         $entriesCount = count($entries);
         $counter = 0;
         foreach ($entries as $entry) {
-            $counter++;
-
-            if ($counter > 1) {
-                fwrite($handle, "\n");
-            }
-
-            $entryStr = $this->getEntryStr($entry);
-            if ($counter == $entriesCount) {
-                $entryStr = rtrim($entryStr);
-            }
-
+            $entryStr = $this->getEntryStr($entry, $counter, $entriesCount);
             fwrite($handle, $entryStr);
+
+            $counter++;
         }
 
         fclose($handle);
@@ -58,9 +50,14 @@ class Writer
      *
      * @return string
      */
-    protected function getEntryStr(array $entry)
+    protected function getEntryStr(array $entry, $index, $entriesCount)
     {
-        $result = $this->writeComments($entry);
+        $result = '';
+        if ($index > 0) {
+            $result = "\n";
+        }
+
+        $result .= $this->writeComments($entry);
         $result .= $this->writeReferences($entry);
         $result .= $this->writeFlags($entry);
         $result .= $this->writeContext($entry);
@@ -68,6 +65,10 @@ class Writer
         $result .= $this->writeMsgId($entry, 'msgid');
         $result .= $this->writeMsgId($entry, 'msgid_plural');
         $result .= $this->writeMsgStr($entry);
+
+        if ($index == $entriesCount - 1) {
+            $result = rtrim($result);
+        }
 
         return $result;
     }
@@ -197,22 +198,20 @@ class Writer
 
         $isPlural = isset($entry['msgid_plural']);
 
-        foreach ($entry['msgstr'] as $i => $t) {
+        foreach ($entry['msgstr'] as $i => $value) {
+            if ($entry['obsolete']) {
+                $result .= "#~ ";
+            }
+
             if ($isPlural) {
-                if ($entry['obsolete']) {
-                    $result .= "#~ ";
-                }
-                $result .= "msgstr[$i] " . $this->cleanExport($t) . "\n";
+                $result .= "msgstr[$i] ";
             } else {
                 if ($i == 0) {
-                    if ($entry['obsolete']) {
-                        $result .= "#~ ";
-                    }
-                    $result .= 'msgstr ' . $this->cleanExport($t) . "\n";
-                } else {
-                    $result .= $this->cleanExport($t) . "\n";
+                    $result .= 'msgstr ';
                 }
             }
+
+            $result .= $this->cleanExport($value) . "\n";
         }
 
         return $result;
