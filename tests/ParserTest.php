@@ -230,6 +230,14 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                 'plural' => false,
                 'flags' => array()
             ),
+            array(
+                'msgid' => '"Stay in quotation"',
+                'msgstr' => 'Lass die " am Ende stehen',
+                'fuzzy' => false,
+                'obsolete' => false,
+                'plural' => false,
+                'flags' => array()
+            ),
         );
     }
 
