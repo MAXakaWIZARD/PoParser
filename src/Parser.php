@@ -149,7 +149,7 @@ class Parser
      */
     protected function parseLine($line)
     {
-        $split = preg_split('/\s/ ', $line, 2);
+        $split = preg_split('/\s/', $line, 2);
 
         return array(
             'key' => $split[0],
@@ -497,7 +497,7 @@ class Parser
                 $value[$k] = $this->clean($v);
             }
         } else {
-            $value = trim($value, '"');
+            $value = preg_replace('/^\"|\"$/', '', $value);
             $value = stripcslashes($value);
         }
 

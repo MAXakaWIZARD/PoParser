@@ -53,3 +53,6 @@ msgstr[1] "very long translation2"
 
 #~ msgid "hare"
 #~ msgstr "liebre"
+
+msgid "\"Stay in quotation\""
+msgstr "Lass die \" am Ende stehen"
