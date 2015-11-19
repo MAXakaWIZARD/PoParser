@@ -459,7 +459,7 @@ class Parser
     }
 
     /**
-     * Allows modifaction of all translations of an entry
+     * Allows modification of all translations of an entry
      *
      * @param $msgid string msgid of the entry which should be updated
      * @param $translation array of strings new Translation for all msgstr by msgid
@@ -470,17 +470,17 @@ class Parser
     {
         if (
             !isset($this->entriesAsArrays[$msgid])
-            or !is_array($translation)
-            or sizeof($translation) != sizeof($this->entriesAsArrays[$msgid]['msgstr'])
+            || !is_array($translation)
+            || sizeof($translation) != sizeof($this->entriesAsArrays[$msgid]['msgstr'])
         ) {
-            throw new \Exception('Entry could not update the given translation');
+            throw new \Exception('Cannot update entry translation');
         }
         $this->removeFuzzyFlagForMsgId($msgid);
         $this->entriesAsArrays[$msgid]['msgstr'] = $translation;
     }
 
     /**
-     * Allows modifaction of one translations of an entry
+     * Allows modification of a single translation of an entry
      *
      * @param $msgid string msgid of the entry which should be updated
      * @param $translation string new translation for an msgstr by msgid
@@ -493,10 +493,10 @@ class Parser
     {
         if (
             !isset($this->entriesAsArrays[$msgid])
-            or !is_string($translation)
-            or !isset($this->entriesAsArrays[$msgid]['msgstr'][$positionMsgstr])
+            || !is_string($translation)
+            || !isset($this->entriesAsArrays[$msgid]['msgstr'][$positionMsgstr])
         ) {
-            throw new \Exception('Entry could not update the given translation');
+            throw new \Exception('Cannot update entry translation');
         }
         $this->removeFuzzyFlagForMsgId($msgid);
         $this->entriesAsArrays[$msgid]['msgstr'][$positionMsgstr] = $translation;

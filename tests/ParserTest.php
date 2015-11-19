@@ -364,7 +364,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntryNotInArray()
     {
-        $this->setExpectedException('\Exception', 'Entry could not update the given translation');
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntry('NOT IN PO', 'Ist nicht in Po');
@@ -376,7 +376,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntryNotAString()
     {
-        $this->setExpectedException('\Exception', 'Entry could not update the given translation');
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntry('cookie', array('Keks'));
@@ -388,7 +388,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntryNotExistingTranslationPosition()
     {
-        $this->setExpectedException('\Exception', 'Entry could not update the given translation');
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntry('cookie', 'Keks', 5);
@@ -400,7 +400,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntriesNotInArray()
     {
-        $this->setExpectedException('\Exception', 'Entry could not update the given translation');
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntries('NOT IN PO', array('Ist nicht in Po'));
@@ -412,7 +412,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntriesNotAnArray()
     {
-        $this->setExpectedException('\Exception', 'Entry could not update the given translation');
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntries('cookie', 'Keks');
@@ -424,7 +424,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntriesNotEqualAmountOfTranslations()
     {
-        $this->setExpectedException('\Exception', 'Entry could not update the given translation');
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntries('cookie', array('Keks'));
