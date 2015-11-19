@@ -439,22 +439,68 @@ class Parser
     }
 
     /**
-     * Allows modification a msgid.
-     * By default disabled fuzzy flag if defined.
+     * Helper for the update-functions by deleting the fuzzy flag
      *
-     * @param $original
-     * @param $translation
+     * @param $msgid string msgid of entry
+     *
+     * @throws \Exception
      */
-    public function updateEntry($original, $translation)
+    protected function removeFuzzyFlagForMsgId($msgid)
     {
-        $this->entriesAsArrays[$original]['fuzzy'] = false;
-        $this->entriesAsArrays[$original]['msgstr'] = array($translation);
-
-        $flags = $this->entriesAsArrays[$original]['flags'];
-        unset($flags[array_search('fuzzy', $flags, true)]);
-        $this->entriesAsArrays[$original]['flags'] = $flags;
+        if (!isset($this->entriesAsArrays[$msgid])) {
+            throw new \Exception('Entry does not exist');
+        }
+        if ($this->entriesAsArrays[$msgid]['fuzzy']) {
+            $flags = $this->entriesAsArrays[$msgid]['flags'];
+            unset($flags[array_search('fuzzy', $flags, true)]);
+            $this->entriesAsArrays[$msgid]['flags'] = $flags;
+            $this->entriesAsArrays[$msgid]['fuzzy'] = false;
+        }
     }
 
+    /**
+     * Allows modification of all translations of an entry
+     *
+     * @param $msgid string msgid of the entry which should be updated
+     * @param $translation array of strings new Translation for all msgstr by msgid
+     *
+     * @throws \Exception
+     */
+    public function updateEntries($msgid, $translation)
+    {
+        if (
+            !isset($this->entriesAsArrays[$msgid])
+            || !is_array($translation)
+            || sizeof($translation) != sizeof($this->entriesAsArrays[$msgid]['msgstr'])
+        ) {
+            throw new \Exception('Cannot update entry translation');
+        }
+        $this->removeFuzzyFlagForMsgId($msgid);
+        $this->entriesAsArrays[$msgid]['msgstr'] = $translation;
+    }
+
+    /**
+     * Allows modification of a single translation of an entry
+     *
+     * @param $msgid string msgid of the entry which should be updated
+     * @param $translation string new translation for an msgstr by msgid
+     * @param $positionMsgstr integer spezification which of the msgstr
+     *      should be changed
+     *
+     * @throws \Exception
+     */
+    public function updateEntry($msgid, $translation, $positionMsgstr = 0)
+    {
+        if (
+            !isset($this->entriesAsArrays[$msgid])
+            || !is_string($translation)
+            || !isset($this->entriesAsArrays[$msgid]['msgstr'][$positionMsgstr])
+        ) {
+            throw new \Exception('Cannot update entry translation');
+        }
+        $this->removeFuzzyFlagForMsgId($msgid);
+        $this->entriesAsArrays[$msgid]['msgstr'][$positionMsgstr] = $translation;
+    }
 
     /**
      * Write entries into the po file.
