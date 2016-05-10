@@ -56,3 +56,9 @@ msgstr[1] "very long translation2"
 
 msgid "\"Stay in quotation\""
 msgstr "Lass die \" am Ende stehen"
+
+#, fuzzy, other-flag
+msgid "cookie"
+msgid_plural "cookies"
+msgstr[0] "biscuit"
+msgstr[1] "biscuits"

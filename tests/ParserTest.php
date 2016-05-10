@@ -238,6 +238,15 @@ class ParserTest extends \PHPUnit_Framework_TestCase
                 'plural' => false,
                 'flags' => array()
             ),
+            array(
+                'msgid' => 'cookie',
+                'msgid_plural' => 'cookies',
+                'msgstr' => array('biscuit', 'biscuits'),
+                'fuzzy' => true,
+                'obsolete' => false,
+                'plural' => true,
+                'flags' => array('fuzzy', 'other-flag')
+            ),
         );
     }
 
@@ -340,5 +349,103 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $entries = $this->parser->getEntriesAsArrays();
         $this->assertEquals('mapache2', $entries['racoon']['msgstr'][0]);
         $this->assertFalse($entries['racoon']['fuzzy']);
+
+        // checking if plural msgstr still existing bevor changing the updateEntry-function
+        $pluralmsgstr = isset($entries['cookie']['msgstr'][1]);
+        $this->parser->updateEntry('cookie', 'Keks');
+        $entries = $this->parser->getEntriesAsArrays();
+        $this->assertEquals('Keks', $entries['cookie']['msgstr'][0]);
+        $this->assertEquals($pluralmsgstr, isset($entries['cookie']['msgstr'][1]));
+    }
+
+    /**
+     * Test if exception is thrown, when in the updateEntry-Function:
+     * if the given msgid is not an entry
+     */
+    public function testFailUpdateEntryNotInArray()
+    {
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
+
+        $this->parser->updateEntry('NOT IN PO', 'Ist nicht in Po');
+    }
+
+    /**
+     * Test if exception is thrown, when in the updateEntry-Function:
+     * when the given parameter for the translation isn't a string
+     */
+    public function testFailUpdateEntryNotAString()
+    {
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
+
+        $this->parser->updateEntry('cookie', array('Keks'));
+    }
+
+    /**
+     * Test if exception is thrown, when in the updateEntry-Function:
+     * when the given parameter for the translationPosition doesn't exist
+     */
+    public function testFailUpdateEntryNotExistingTranslationPosition()
+    {
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
+
+        $this->parser->updateEntry('cookie', 'Keks', 5);
+    }
+
+    /**
+     * Test if exception is thrown, when in the updateEntries-Function:
+     * if the given msgid is not an entry
+     */
+    public function testFailUpdateEntriesNotInArray()
+    {
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
+
+        $this->parser->updateEntries('NOT IN PO', array('Ist nicht in Po'));
+    }
+
+    /**
+     * Test if exception is thrown, when in the updateEntries-Function:
+     * when the given parameter for the translation isn't an array
+     */
+    public function testFailUpdateEntriesNotAnArray()
+    {
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
+
+        $this->parser->updateEntries('cookie', 'Keks');
+    }
+
+    /**
+     * Test if exception is thrown, when in the updateEntries-Function:
+     * in the given Array isn't the same amount of translation like before
+     */
+    public function testFailUpdateEntriesNotEqualAmountOfTranslations()
+    {
+        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
+
+        $this->parser->updateEntries('cookie', array('Keks'));
+    }
+
+    /**
+     *
+     */
+    public function testUpdateEntries()
+    {
+        $this->parser->read(TEST_DATA_PATH . '/general.po');
+
+        $entries = $this->parser->getEntriesAsArrays();
+        $this->assertEquals('biscuit', $entries['cookie']['msgstr'][0]);
+        $this->assertEquals('biscuits', $entries['cookie']['msgstr'][1]);
+        $this->assertTrue($entries['cookie']['fuzzy']);
+
+        $this->parser->updateEntries('cookie', array('Keks','Kekse'));
+        $entries = $this->parser->getEntriesAsArrays();
+        $this->assertEquals('Keks', $entries['cookie']['msgstr'][0]);
+        $this->assertEquals('Kekse', $entries['cookie']['msgstr'][1]);
+        $this->assertFalse($entries['cookie']['fuzzy']);
     }
 }
