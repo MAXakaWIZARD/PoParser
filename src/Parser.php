@@ -252,7 +252,7 @@ class Parser
                 $this->currentEntry['msgstr'][] = trim($line, '"');
                 break;
             default:
-                throw new \Exception('Parse error!');
+                //throw new \Exception('Parse error!');
         }
     }
 
