@@ -510,7 +510,7 @@ class Parser
      */
     public function write($filePath)
     {
-        $writer = new Writer;
+        $writer = new Writer();
         $writer->write($filePath, $this->entriesAsArrays);
     }
 

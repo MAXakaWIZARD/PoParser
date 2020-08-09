@@ -14,7 +14,7 @@
 
 Gettext *.po files parser for PHP.
 
-This package is compliant with [PSR-4](http://www.php-fig.org/psr/4/), [PSR-1](http://www.php-fig.org/psr/1/), and [PSR-2](http://www.php-fig.org/psr/2/).
+This package is compliant with [PSR-4](http://www.php-fig.org/psr/4/) autoloading standard and [PSR-12](http://www.php-fig.org/psr/12/) coding standard.
 If you notice compliance oversights, please send a patch via pull request.
 
 ## Usage

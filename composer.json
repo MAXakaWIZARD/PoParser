@@ -15,10 +15,18 @@
         "php": ">=5.3.0"
     },
     "require-dev": {
+        "squizlabs/php_codesniffer": "~3.0",
         "satooshi/php-coveralls": "~1.0",
         "phpunit/phpunit": "~4.8"
     },
     "autoload": {
         "psr-4": {"PoParser\\": "src/"}
+    },
+    "scripts": {
+        "phpcs": "phpcs -p --standard=PSR12 --extensions=php src",
+        "test": [
+            "@phpcs",
+            "phpunit"
+        ]
     }
 }
