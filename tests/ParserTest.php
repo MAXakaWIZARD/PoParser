@@ -1,30 +1,22 @@
 <?php
 namespace PoParser\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PoParser\Parser;
 
-/**
- *
- */
-class ParserTest extends \PHPUnit_Framework_TestCase
+class ParserTest extends TestCase
 {
     /**
      * @var Parser
      */
     private $parser;
 
-    /**
-     *
-     */
-    public function setUp()
+    public function setUp(): void
     {
         $this->parser = new Parser();
     }
 
-    /**
-     *
-     */
-    public function tearDown()
+    public function tearDown(): void
     {
         $writePath = TEST_DATA_PATH . '/non_readable.po';
         if (file_exists($writePath)) {
@@ -33,28 +25,19 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     *
-     */
     public function testInvalidFile()
     {
-        $this->setExpectedException('\Exception', 'Input file not defined.');
+        $this->expectExceptionMessage('Input file not defined.');
         $this->parser->read('');
     }
 
-    /**
-     *
-     */
     public function testNonExistentFile()
     {
         $path = '/path/to/unknown/file.po';
-        $this->setExpectedException('\Exception', 'File does not exist: ' . $path);
+        $this->expectExceptionMessage('File does not exist: ' . $path);
         $this->parser->read($path);
     }
 
-    /**
-     *
-     */
     public function testNonReadableFile()
     {
         $path = TEST_DATA_PATH . '/non_readable.po';
@@ -62,13 +45,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertFileExists($path);
         chmod($path, 0000);
 
-        $this->setExpectedException('\Exception', 'Unable to open file for reading: ' . $path);
+        $this->expectExceptionMessage('Unable to open file for reading: ' . $path);
         $this->parser->read($path);
     }
 
-        /**
-     *
-     */
     public function testGeneral()
     {
         $this->parser->read(TEST_DATA_PATH . '/general.po');
@@ -159,105 +139,99 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * @return array
-     */
-    protected function getGeneralCorrectData()
+    protected function getGeneralCorrectData(): array
     {
-        return array(
-            array(
+        return [
+            [
                 'msgid' => '',
                 'msgstr' => '',
                 'fuzzy' => false,
                 'obsolete' => false,
                 'plural' => false,
-                'flags' => array()
-            ),
-            array(
+                'flags' => []
+            ],
+            [
                 'msgid' => 'cat',
                 'msgstr' => 'gato',
                 'fuzzy' => false,
                 'obsolete' => false,
                 'plural' => false,
-                'flags' => array(),
+                'flags' => [],
                 'comment' => 'some comment',
                 'tcomment' => 'translator\'s comment'
-            ),
-            array(
+            ],
+            [
                 'context' => 'some context',
                 'msgid' => '%s, the dog',
                 'msgstr' => '%s, perro',
                 'fuzzy' => false,
                 'obsolete' => false,
                 'plural' => false,
-                'flags' => array('php-format', 'another-flag'),
-                'references' => array(
+                'flags' => ['php-format', 'another-flag'],
+                'references' => [
                     '/path/to/2.php:1',
                     '/path/to/3.php:3'
-                )
-            ),
-            array(
+                ]
+            ],
+            [
                 'msgid' => 'racoon',
                 'msgstr' => 'mapache',
                 'fuzzy' => true,
                 'obsolete' => false,
                 'plural' => false,
-                'flags' => array('fuzzy')
-            ),
-            array(
+                'flags' => ['fuzzy']
+            ],
+            [
                 'msgid' => 'country',
                 'msgid_plural' => 'countries',
-                'msgstr' => array('país', 'países'),
+                'msgstr' => ['país', 'países'],
                 'fuzzy' => false,
                 'obsolete' => false,
                 'plural' => true,
-                'flags' => array()
-            ),
-            array(
+                'flags' => []
+            ],
+            [
                 'msgid' => 'very-very long string',
                 'msgid_plural' => 'very-very long plural string',
-                'msgstr' => array('very long translation', 'very long translation2'),
+                'msgstr' => ['very long translation', 'very long translation2'],
                 'fuzzy' => false,
                 'obsolete' => false,
                 'plural' => true,
-                'flags' => array()
-            ),
-            array(
+                'flags' => []
+            ],
+            [
                 'msgid' => 'hare',
                 'msgstr' => 'liebre',
                 'fuzzy' => false,
                 'obsolete' => true,
                 'plural' => false,
-                'flags' => array()
-            ),
-            array(
+                'flags' => []
+            ],
+            [
                 'msgid' => '"Stay in quotation"',
                 'msgstr' => 'Lass die " am Ende stehen',
                 'fuzzy' => false,
                 'obsolete' => false,
                 'plural' => false,
-                'flags' => array()
-            ),
-            array(
+                'flags' => []
+            ],
+            [
                 'msgid' => 'cookie',
                 'msgid_plural' => 'cookies',
-                'msgstr' => array('biscuit', 'biscuits'),
+                'msgstr' => ['biscuit', 'biscuits'],
                 'fuzzy' => true,
                 'obsolete' => false,
                 'plural' => true,
-                'flags' => array('fuzzy', 'other-flag')
-            ),
-        );
+                'flags' => ['fuzzy', 'other-flag']
+            ],
+        ];
     }
 
-    /**
-     *
-     */
     public function testHeaders()
     {
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
-        $correctData = array(
+        $correctData = [
             'Project-Id-Version' => 'test',
             'Report-Msgid-Bugs-To' => '',
             'POT-Creation-Date' => '2014-12-11 15:31+0200',
@@ -274,7 +248,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             'Plural-Forms' => 'nplurals=2; plural=n != 1;',
             'X-Generator' => 'Poedit 1.7.1',
             'X-Poedit-SearchPath-0' => '/path/to/project'
-        );
+        ];
 
         $headers = $this->parser->getHeaders();
 
@@ -292,9 +266,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     *
-     */
     public function testClearFuzzy()
     {
         $this->parser->read(TEST_DATA_PATH . '/general.po');
@@ -320,9 +291,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($fuzzyCount === 0, 'There should not be any fuzzy entry');
     }
 
-    /**
-     *
-     */
     public function testSetEntries()
     {
         $this->parser->read(TEST_DATA_PATH . '/general.po');
@@ -334,9 +302,6 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($entries, $this->parser->getEntriesAsArrays());
     }
 
-    /**
-     *
-     */
     public function testUpdateEntry()
     {
         $this->parser->read(TEST_DATA_PATH . '/general.po');
@@ -364,7 +329,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntryNotInArray()
     {
-        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->expectExceptionMessage('Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntry('NOT IN PO', 'Ist nicht in Po');
@@ -376,10 +341,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntryNotAString()
     {
-        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->expectExceptionMessage('Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
-        $this->parser->updateEntry('cookie', array('Keks'));
+        $this->parser->updateEntry('cookie', ['Keks']);
     }
 
     /**
@@ -388,7 +353,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntryNotExistingTranslationPosition()
     {
-        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->expectExceptionMessage('Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntry('cookie', 'Keks', 5);
@@ -400,10 +365,10 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntriesNotInArray()
     {
-        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->expectExceptionMessage('Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
-        $this->parser->updateEntries('NOT IN PO', array('Ist nicht in Po'));
+        $this->parser->updateEntries('NOT IN PO', ['Ist nicht in Po']);
     }
 
     /**
@@ -412,7 +377,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntriesNotAnArray()
     {
-        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->expectExceptionMessage('Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
         $this->parser->updateEntries('cookie', 'Keks');
@@ -424,15 +389,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testFailUpdateEntriesNotEqualAmountOfTranslations()
     {
-        $this->setExpectedException('\Exception', 'Cannot update entry translation');
+        $this->expectExceptionMessage('Cannot update entry translation');
         $this->parser->read(TEST_DATA_PATH . '/general.po');
 
-        $this->parser->updateEntries('cookie', array('Keks'));
+        $this->parser->updateEntries('cookie', ['Keks']);
     }
 
-    /**
-     *
-     */
     public function testUpdateEntries()
     {
         $this->parser->read(TEST_DATA_PATH . '/general.po');
@@ -442,7 +404,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('biscuits', $entries['cookie']['msgstr'][1]);
         $this->assertTrue($entries['cookie']['fuzzy']);
 
-        $this->parser->updateEntries('cookie', array('Keks','Kekse'));
+        $this->parser->updateEntries('cookie', ['Keks','Kekse']);
         $entries = $this->parser->getEntriesAsArrays();
         $this->assertEquals('Keks', $entries['cookie']['msgstr'][0]);
         $this->assertEquals('Kekse', $entries['cookie']['msgstr'][1]);

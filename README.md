@@ -9,7 +9,7 @@
 [![Packagist](https://img.shields.io/packagist/dt/maxakawizard/po-parser.svg)](https://packagist.org/packages/maxakawizard/po-parser)
 [![Packagist](https://img.shields.io/packagist/dm/maxakawizard/po-parser.svg)](https://packagist.org/packages/maxakawizard/po-parser)
 
-[![Minimum PHP Version](http://img.shields.io/badge/php-%3E%3D%205.3-8892BF.svg)](https://php.net/)
+[![Minimum PHP Version](http://img.shields.io/badge/php-%3E%3D%207.1-8892BF.svg)](https://php.net/)
 [![License](https://img.shields.io/packagist/l/maxakawizard/po-parser.svg)](https://packagist.org/packages/maxakawizard/po-parser)
 
 Gettext *.po files parser for PHP.
