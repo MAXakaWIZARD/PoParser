@@ -3,7 +3,6 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/?branch=master)
 [![Code Climate](https://codeclimate.com/github/MAXakaWIZARD/PoParser/badges/gpa.svg)](https://codeclimate.com/github/MAXakaWIZARD/PoParser)
 [![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PoParser/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PoParser?branch=master)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/14f7f95a-b068-44b8-8b0c-64575764944d.svg)](https://insight.sensiolabs.com/projects/14f7f95a-b068-44b8-8b0c-64575764944d)
 
 [![GitHub tag](https://img.shields.io/github/tag/MAXakaWIZARD/PoParser.svg?label=latest)](https://packagist.org/packages/maxakawizard/po-parser) 
 [![Packagist](https://img.shields.io/packagist/dt/maxakawizard/po-parser.svg)](https://packagist.org/packages/maxakawizard/po-parser)
