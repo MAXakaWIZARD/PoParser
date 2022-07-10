@@ -1,5 +1,5 @@
 # PoParser
-![Build](https://github.com/MAXakaWIZARD/PoParser/actions/workflows/ci.yml/badge.svg)
+[![Build](https://github.com/MAXakaWIZARD/PoParser/actions/workflows/ci.yml/badge.svg)](https://github.com/MAXakaWIZARD/PoParser/actions)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/MAXakaWIZARD/PoParser/?branch=master)
 [![Code Climate](https://codeclimate.com/github/MAXakaWIZARD/PoParser/badges/gpa.svg)](https://codeclimate.com/github/MAXakaWIZARD/PoParser)
 [![Coverage Status](https://coveralls.io/repos/MAXakaWIZARD/PoParser/badge.svg?branch=master)](https://coveralls.io/r/MAXakaWIZARD/PoParser?branch=master)
