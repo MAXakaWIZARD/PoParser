@@ -2,6 +2,8 @@
 
 namespace PoParser;
 
+use Exception;
+
 class Parser
 {
     /**
@@ -78,7 +80,7 @@ class Parser
      *   #~ msgstr "editar dades"
      *
      * @param string $filePath
-     * @throws \Exception
+     * @throws Exception
      * @return array|bool
      */
     public function read($filePath)
@@ -104,7 +106,7 @@ class Parser
     /**
      * @param string $line
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function processLine($line)
     {
@@ -207,7 +209,7 @@ class Parser
      * @param $data
      * @param $rawLine
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function handleOtherCases($data, $rawLine)
     {
@@ -234,7 +236,7 @@ class Parser
     /**
      * @param string $line
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function processContinuedLineInSameState($line)
     {
@@ -252,7 +254,7 @@ class Parser
                 $this->currentEntry['msgstr'][] = trim($line, '"');
                 break;
             default:
-                throw new \Exception('Parse error!');
+                throw new Exception('Parse error!');
         }
     }
 
@@ -380,20 +382,20 @@ class Parser
     /**
      * @param string $filePath
      *
-     * @throws \Exception
+     * @throws Exception
      * @return resource
      */
     protected function openFile($filePath)
     {
         if (empty($filePath)) {
-            throw new \Exception('Input file not defined.');
+            throw new Exception('Input file not defined.');
         } elseif (!file_exists($filePath)) {
-            throw new \Exception("File does not exist: {$filePath}");
+            throw new Exception("File does not exist: {$filePath}");
         }
 
         $handle = @fopen($filePath, 'r');
         if (false === $handle) {
-            throw new \Exception("Unable to open file for reading: {$filePath}");
+            throw new Exception("Unable to open file for reading: {$filePath}");
         }
 
         return $handle;
@@ -443,12 +445,12 @@ class Parser
      *
      * @param $msgid string msgid of entry
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function removeFuzzyFlagForMsgId($msgid)
     {
         if (!isset($this->entriesAsArrays[$msgid])) {
-            throw new \Exception('Entry does not exist');
+            throw new Exception('Entry does not exist');
         }
         if ($this->entriesAsArrays[$msgid]['fuzzy']) {
             $flags = $this->entriesAsArrays[$msgid]['flags'];
@@ -464,7 +466,7 @@ class Parser
      * @param $msgid string msgid of the entry which should be updated
      * @param $translation array of strings new Translation for all msgstr by msgid
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function updateEntries($msgid, $translation)
     {
@@ -473,7 +475,7 @@ class Parser
             || !is_array($translation)
             || sizeof($translation) != sizeof($this->entriesAsArrays[$msgid]['msgstr'])
         ) {
-            throw new \Exception('Cannot update entry translation');
+            throw new Exception('Cannot update entry translation');
         }
         $this->removeFuzzyFlagForMsgId($msgid);
         $this->entriesAsArrays[$msgid]['msgstr'] = $translation;
@@ -487,7 +489,7 @@ class Parser
      * @param $positionMsgstr integer spezification which of the msgstr
      *      should be changed
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function updateEntry($msgid, $translation, $positionMsgstr = 0)
     {
@@ -496,7 +498,7 @@ class Parser
             || !is_string($translation)
             || !isset($this->entriesAsArrays[$msgid]['msgstr'][$positionMsgstr])
         ) {
-            throw new \Exception('Cannot update entry translation');
+            throw new Exception('Cannot update entry translation');
         }
         $this->removeFuzzyFlagForMsgId($msgid);
         $this->entriesAsArrays[$msgid]['msgstr'][$positionMsgstr] = $translation;
@@ -506,7 +508,7 @@ class Parser
      * Write entries into the po file.
      *
      * @param string $filePath
-     * @throws \Exception
+     * @throws Exception
      */
     public function write($filePath)
     {

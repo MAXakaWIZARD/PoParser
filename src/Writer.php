@@ -2,13 +2,15 @@
 
 namespace PoParser;
 
+use Exception;
+
 class Writer
 {
     /**
      * @param string $filePath
      * @param array $entries
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function write($filePath, array $entries)
     {
@@ -28,18 +30,18 @@ class Writer
 
     /**
      * @param string $filePath
-     * @throws \Exception
+     * @throws Exception
      * @return resource
      */
     protected function openFile($filePath)
     {
         if (empty($filePath)) {
-            throw new \Exception('Output file not defined.');
+            throw new Exception('Output file not defined.');
         }
 
         $handle = @fopen($filePath, 'wb');
         if (false === $handle) {
-            throw new \Exception("Unable to open file for writing: {$filePath}");
+            throw new Exception("Unable to open file for writing: {$filePath}");
         }
 
         return $handle;

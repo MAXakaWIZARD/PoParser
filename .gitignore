@@ -3,3 +3,4 @@ composer.lock
 *.phar
 build
 phpunit.xml
+.bashrc
