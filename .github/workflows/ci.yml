@@ -21,7 +21,7 @@ jobs:
     name: Tests
 
     env:
-      extensions: mbstring
+      extensions: mbstring,xdebug
 
     strategy:
       matrix:
@@ -42,6 +42,14 @@ jobs:
         with:
           fetch-depth: 2
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: "xdebug"
+          ini-values: date.timezone=Europe/Kiev,memory_limit=-1,default_socket_timeout=10,session.gc_probability=0,apc.enable_cli=1,zend.assertions=1
+          php-version: "${{ matrix.php }}"
+          extensions: "${{ env.extensions }}"
+
       - name: Configure environment
         run: |
           php -v
@@ -58,12 +66,8 @@ jobs:
         run: |
           vendor/bin/phpunit
 
-      - name: Run phpunit
+      - name: Run phpunit with coverage report
         if: "matrix.php == '7.4'"
         run: |
           vendor/bin/phpunit --coverage-clover build/logs/clover.xml
-
-      - name: Run coverage report
-        if: "matrix.php == '7.4'"
-        run: |
           php vendor/bin/coveralls -v
