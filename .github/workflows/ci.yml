@@ -30,11 +30,12 @@ jobs:
           - php: '7.2'
           - php: '7.3'
           - php: '7.4'
+            coverage: yes
           - php: '8.0'
           - php: '8.1'
       fail-fast: false
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -62,12 +63,22 @@ jobs:
           composer install -o -q --no-suggest
 
       - name: Run phpunit
-        if: "matrix.php != '7.4'"
+        if: "matrix.coverage != 'yes'"
         run: |
           vendor/bin/phpunit
 
       - name: Run phpunit with coverage report
-        if: "matrix.php == '7.4'"
+        if: "matrix.coverage == 'yes'"
         run: |
           vendor/bin/phpunit --coverage-clover build/logs/clover.xml
-          php vendor/bin/coveralls -v
+
+      - name: Send coverage
+        if: "matrix.coverage == 'yes'"
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_PARALLEL: true
+          COVERALLS_FLAG_NAME: "PHP ${{ matrix.php }}"
+        run: |
+          php vendor/bin/php-coveralls -v
+          curl -k https://coveralls.io/webhook?repo_token=${{ secrets.GITHUB_TOKEN }} -d "repo_name=$GITHUB_REPOSITORY&payload[build_num]=$GITHUB_RUN_ID&payload[status]=done"
+
