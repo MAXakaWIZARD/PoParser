@@ -317,6 +317,9 @@ class Parser
         $counter = 0;
         foreach ($this->rawEntries as $entry) {
             $entry = $this->prepareEntry($entry, $counter);
+            if (!$entry) {
+                continue;
+            }
 
             $id = $this->getMsgId($entry);
 
@@ -330,12 +333,16 @@ class Parser
     }
 
     /**
-     * @param $entry
+     * @param string|array $entry
      *
      * @return string
      */
     protected function getMsgId($entry)
     {
+        if (!isset($entry['msgid'])) {
+            return null;
+        }
+
         return is_array($entry['msgid']) ? implode('', $entry['msgid']) : $entry['msgid'];
     }
 
@@ -352,6 +359,9 @@ class Parser
         }
 
         $id = $this->getMsgId($entry);
+        if ($id === null) {
+            return [];
+        }
 
         if ($index === 0 && $id === '') {
             //header entry
