@@ -1,0 +1,5 @@
+.github/ export-ignore
+tests/ export-ignore
+.coveralls.yml export-ignore
+.gitignore export-ignore
+.scrutinizer.yml export-ignore
